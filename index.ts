@@ -24,26 +24,26 @@ app.post("/", async (req, res) => {
 });
 
 // Bulk upload route
-app.post("/bulk-upload", async (req, res) => {
-  console.log("inside bulk upload route");
-  try {
-    const pubsubMessage = req.body.message;
-    const jobType = pubsubMessage.attributes?.jobType;
+// app.post("/bulk-upload", async (req, res) => {
+//   console.log("inside bulk upload route");
+//   try {
+//     const pubsubMessage = req.body.message;
+//     const jobType = pubsubMessage.attributes?.jobType;
 
-    console.log("jobType", jobType);
+//     console.log("jobType", jobType);
 
-    const dataStr = Buffer.from(pubsubMessage.data, "base64").toString();
-    const payload = JSON.parse(dataStr);
+//     const dataStr = Buffer.from(pubsubMessage.data, "base64").toString();
+//     const payload = JSON.parse(dataStr);
 
-    console.log("Bulk upload job:", payload);
-    // TODO: bulk upload logic
+//     console.log("Bulk upload job:", payload);
+//     // TODO: bulk upload logic
 
-    res.status(204).send(); // ack success
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("error");
-  }
-});
+//     res.status(204).send(); // ack success
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("error");
+//   }
+// });
 
 // AI analysis route
 app.post("/ai-analysis", async (req, res) => {
@@ -69,6 +69,35 @@ app.post("/ai-analysis", async (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Hello, world!");
+});
+
+app.post("/bulk-upload", async (req, res) => {
+  try {
+    const pubsubMessage = req.body.message;
+    const jobType = pubsubMessage.attributes?.jobType;
+
+    const dataStr = Buffer.from(pubsubMessage.data, "base64").toString();
+    const payload = JSON.parse(dataStr);
+
+    console.log("Bulk upload file job:", payload);
+
+    // Download file
+    // const [fileBuffer] = await storage
+    //   .bucket(bucketName)
+    //   .file(payload.filePath)
+    //   .download();
+
+    // console.log(
+    //   `Downloaded ${payload.originalName}, size: ${fileBuffer.length} bytes`
+    // );
+
+    // TODO: process file
+
+    res.status(204).send();
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("error");
+  }
 });
 
 const port = process.env.PORT || 8080;
